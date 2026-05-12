@@ -20,9 +20,36 @@ O fluxo foi desenhado utilizando o Workflow Studio e a linguagem de consulta JSO
 📸 Diagrama Visual
 O AWS Step Functions gera automaticamente um diagrama visual da Máquina de Estados. Abaixo está a arquitetura desenvolvida neste projeto:
 
-> *Nota: A imagem acima está armazenada na pasta `/images` deste repositório.*
 
 💻 Amazon States Language (Código Fonte)
 Embora a arquitetura tenha sido construída visualmente, o Step Functions opera sob o capô utilizando JSON. Abaixo está o código gerado que define toda a estrutura de transições e estados (incluindo o bloco `Pass` simulado e a condicional JSONata):
 
-```json
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "Requer Backup?",
+  "States": {
+    "Requer Backup?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Next": "Realizar Backup no S3",
+          "Condition": "{% $necessita_backup = true %}"
+        }
+      ],
+      "Default": "Enviar E-mail de Conclusão"
+    },
+    "Realizar Backup no S3": {
+      "Type": "Pass",
+      "End": true
+    },
+    "Enviar E-mail de Conclusão": {
+      "Type": "Pass",
+      "Next": "Desativar Conta e Acessos"
+    },
+    "Desativar Conta e Acessos": {
+      "Type": "Pass",
+      "End": true
+    }
+  },
+  "QueryLanguage": "JSONata"
+}
